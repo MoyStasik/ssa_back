@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AllowNull, Column, DataType, Model, Table } from 'sequelize-typescript';
+import { BelongsToMany, Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Space } from '../spaces/spaces.model.js';
+import { SpaceUsers } from '../spaces/space-users.model.js';
 
 export interface UserData {
   email: string,
@@ -32,4 +34,8 @@ export class User extends Model<User, UserData>{
   @ApiProperty({ example: '2026-11-07 21:18:52.586+03', description: 'Время создания пользователя' })
   @Column({ type: DataType.DATE, allowNull: false })
   createdAt: string;
+
+  @BelongsToMany(() => Space, () => SpaceUsers)
+  @HasMany(() => Space, { foreignKey: 'owner_id', as: 'author' })
+  spaces: Space[];
 }
